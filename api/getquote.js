@@ -40,3 +40,18 @@ module.exports = async (req, res) => {
     res.status(500).json({ error: 'Internal error in getquote.' });
   }
 };
+// already have `quote` = match.metadata.text
+async function shrinkToOneLiner(paragraph) {
+  const prompt = `
+  Rewrite the following Warren Buffett paragraph as one concise quote
+  (max 35 words) in his voice. Remove line-breaks and quotation marks.
+
+  Paragraph:
+  """${paragraph}"""
+  `;
+  const chat = genAI.getGenerativeModel({model: "gemini-1.5-flash"});
+  const resp = await chat.generateContent(prompt);
+  return resp.response.text().trim().replace(/^"|"$/g, '');
+}
+
+quote = await shrinkToOneLiner(quote);
