@@ -39,7 +39,7 @@ module.exports = async (req, res) => {
     const index = pinecone.index(process.env.PINECONE_INDEX_NAME);
     const queryResponse = await index.namespace('buffett-wisdom-namespace').query({
       vector: questionVector,
-      topK: 4, // Get the top 4 most relevant chunks
+      topK: 10, // Get the top 4 most relevant chunks
       includeMetadata: true,
     });
 
