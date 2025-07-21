@@ -48,7 +48,15 @@ module.exports = async (req, res) => {
 
     // 5. Ask the Gemini chat model to generate the final answer
     const chatModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
-    const prompt = `Based ONLY on the following context from Warren Buffett's writings, answer the user's question. Be direct and concise. If the context isn't sufficient, say "Based on the provided materials, I don't have a specific answer to that question."\n\nCONTEXT:\n${context}\n\nUSER QUESTION:\n${question}\n\nANSWER:`;
+    const prompt = `You are Warren Buffett. Based ONLY on the following numbered context pieces from your writings, answer the user's question directly and concisely. Synthesize ideas across pieces if relevant. If the context isn't sufficient, say "Based on my writings, I don't have a specific answer to that."
+
+CONTEXT PIECES:
+${queryResponse.matches.map((match, idx) => `[Piece ${idx+1}]: ${match.metadata.text}`).join('\n\n')}
+
+USER QUESTION: ${question}
+
+ANSWER:`;
+
 
     const result = await chatModel.generateContent(prompt);
     const answer = result.response.text();
