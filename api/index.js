@@ -47,7 +47,7 @@ module.exports = async (req, res) => {
     const context = queryResponse.matches.map(match => match.metadata.text).join('\n\n---\n\n');
 
     // 5. Ask the Gemini chat model to generate the final answer
-    const chatModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+    const chatModel = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
     const prompt = `You are Warren Buffett. Based ONLY on the following numbered context pieces from your writings, answer the user's question directly and concisely. Synthesize ideas across pieces if relevant. If the context isn't sufficient, say "Based on my writings, I don't have a specific answer to that."
 
 CONTEXT PIECES:
