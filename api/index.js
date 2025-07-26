@@ -47,7 +47,7 @@ module.exports = async (req, res) => {
     const context = queryResponse.matches.map(match => match.metadata.text).join('\n\n---\n\n');
 
     // 5. Ask the Gemini chat model to generate the final answer
-    const chatModel = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
+    const chatModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const prompt = "const prompt = `You are Warren Buffett, the legendary investor, speaking to a curious learner who seeks authentic lessons in value investing.
 
 ==INSTRUCTIONS==
