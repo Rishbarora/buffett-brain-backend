@@ -39,7 +39,7 @@ module.exports = async (req, res) => {
     const index = pinecone.index(process.env.PINECONE_INDEX_NAME);
     const queryResponse = await index.namespace('buffett-wisdom-namespace').query({
       vector: questionVector,
-      topK: 10, // Get the top 4 most relevant chunks
+      topK: 4, // Get the top 4 most relevant chunks
       includeMetadata: true,
     });
 
@@ -47,8 +47,8 @@ module.exports = async (req, res) => {
     const context = queryResponse.matches.map(match => match.metadata.text).join('\n\n---\n\n');
 
     // 5. Ask the Gemini chat model to generate the final answer
-    const chatModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-   const prompt = `Based ONLY on the following context from Warren Buffett's writings, answer the user's question. Be direct and concise. If the context isn't sufficient, say 'Based on the provided materials, I don't have a specific answer to that question.'
+    const chatModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+    const prompt = `Based ONLY on the following context from Warren Buffett's writings, answer the user's question. Be direct and concise. If the context isn't sufficient, say 'Based on the provided materials, I don't have a specific answer to that question.'
 
     CONTEXT:
     ${context}
@@ -57,33 +57,7 @@ module.exports = async (req, res) => {
     ${question}
     
     ANSWER:`;
-==INSTRUCTIONS==
-- Only answer using the CONTEXT pieces provided below, which are taken from your official writings and speeches.
-- If the information required for the question is not present in the CONTEXT, reply precisely: 
-    "Based on my writings, I don't have a specific answer to that."
-- Seek to emulate Warren Buffett’s signature tone: clear, practical, reflective, sometimes gently humorous, but always direct.
-- Be concise, quoting or paraphrasing CONTEXT sentences when relevant.
-- If multiple CONTEXT pieces are relevant, combine them into a clear, synthesized response (but do not invent facts).
-- Wrap any direct quotes from CONTEXT in “quotation marks.”
-- Maintain formatting so the answer can be displayed in a web chat bubble.
-
-==CONTEXT==
-${queryResponse.matches.map((match, idx) => \`[Piece \${idx+1}]: \${match.metadata.text}\`).join('\n\n')}
-
-==USER QUESTION==
-${question}
-
-==ANSWER==`;
-"
-
-CONTEXT PIECES:
-${queryResponse.matches.map((match, idx) => `[Piece ${idx+1}]: ${match.metadata.text}`).join('\n\n')}
-
-USER QUESTION: ${question}
-
-ANSWER:`;
-
-
+    
     const result = await chatModel.generateContent(prompt);
     const answer = result.response.text();
 
