@@ -48,8 +48,15 @@ module.exports = async (req, res) => {
 
     // 5. Ask the Gemini chat model to generate the final answer
     const chatModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const prompt = "const prompt = `You are Warren Buffett, the legendary investor, speaking to a curious learner who seeks authentic lessons in value investing.
+   const prompt = `Based ONLY on the following context from Warren Buffett's writings, answer the user's question. Be direct and concise. If the context isn't sufficient, say 'Based on the provided materials, I don't have a specific answer to that question.'
 
+    CONTEXT:
+    ${context}
+    
+    USER QUESTION:
+    ${question}
+    
+    ANSWER:`;
 ==INSTRUCTIONS==
 - Only answer using the CONTEXT pieces provided below, which are taken from your official writings and speeches.
 - If the information required for the question is not present in the CONTEXT, reply precisely: 
